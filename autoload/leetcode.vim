@@ -24,7 +24,7 @@ import leetcode
 
 try:
     import keyring
-    has_keyring = True
+    has_keyring = False
 except ImportError:
     has_keyring = False
 EOF
@@ -52,17 +52,8 @@ function! s:LegacySignIn(ask) abort
         return v:false
     endif
 
-    if a:ask || g:leetcode_username == '' || g:leetcode_password == ''
-        let username = input('Username: ', g:leetcode_username)
-        let password = inputsecret('Password: ')
-        let g:leetcode_username = username
-        let g:leetcode_password = password
-        redraw
-    else
-        let username = g:leetcode_username
-        let password = g:leetcode_password
-    endif
-
+    let username = 'demo'
+    let password =  'demo'
     return s:DoSignIn(username, password)
 endfunction
 
