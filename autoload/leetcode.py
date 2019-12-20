@@ -4,6 +4,7 @@ import re
 import time
 import os
 from threading import Semaphore, Thread, current_thread
+import sqlite3
 
 try:
     from bs4 import BeautifulSoup
@@ -44,7 +45,7 @@ task_output = None
 task_err = ''
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.ERROR)
+log.setLevel(logging.INFO)
 
 def enable_logging():
     out_hdlr = logging.FileHandler('leetcode-vim.log')
@@ -132,30 +133,30 @@ def is_login():
     return session and 'LEETCODE_SESSION' in session.cookies
 
 
+
+def getcookiefromchrome(host='.oschina.net',cookiepath='/data/www/cookie'):
+    sql="select host,name,value from moz_cookies where host='%s'" % host
+    with sqlite3.connect(cookiepath) as conn:
+        cu=conn.cursor()
+        cookies={name:value for host,name,value in cu.execute(sql).fetchall()}
+        return cookies
+
 def signin(username, password):
     global session
     session = requests.Session()
     if 'cn' in LC_BASE:
+        cookie = getcookiefromchrome('.leetcode.cn',cookiepath='/data/www/cookie')
         res = session.get(LC_CSRF)
     else:
+        cookie = getcookiefromchrome('.leetcode.com',cookiepath='/data/www/cookie')
         res = session.get(LC_LOGIN)
+
+    session.cookies = requests.utils.add_dict_to_cookiejar(session.cookies, cookie)
+
     if res.status_code != 200:
         _echoerr('cannot open ' + LC_BASE)
         return False
 
-    headers = {'Origin': LC_BASE,
-               'Referer': LC_LOGIN}
-    form = {'csrfmiddlewaretoken': session.cookies['csrftoken'],
-            'login': username,
-            'password': password}
-    log.info('signin request: headers="%s" login="%s"', headers, username)
-    # requests follows the redirect url by default
-    # disable redirection explicitly
-    res = session.post(LC_LOGIN, data=form, headers=headers, allow_redirects=False)
-    log.info('signin response: status="%s" body="%s"', res.status_code, res.text)
-    if res.status_code != 302:
-        _echoerr('password incorrect')
-        return False
     return True
 
 

@@ -21,14 +21,11 @@ class TestLeetcode(unittest.TestCase):
 
     def setUp(self):
         leetcode.enable_logging()
-
-    def testLogin(self):
-        is_login=leetcode.is_login()
-        self.assertEqual(is_login, None)
-        name = input("your name: ")
-        pwd =  input("your pass: ")
-        is_login = leetcode.signin("prozhou", "zsz123")
+        is_login = leetcode.signin("fake", "fake")
         self.assertEqual(is_login, True)
+
+    def testGetProbles(self):
+        leetcode.get_problems(["all"])
 
 
     def test_eqal(self):
