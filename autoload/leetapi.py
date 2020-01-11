@@ -48,6 +48,20 @@ class leet():
         problem =  req.leet(self.session,self.headers).get_problem(problem_id)
         return self._format_problem(problem)
 
+    def get_submissions(self, problem):
+        req = self._get_req_imp("leetsubmit")
+        submissions =  req.leetsubmit(self.session,self.headers).get_submissions(problem)
+        return  submissions
+
+    def get_submission(self, sid):
+        req = self._get_req_imp("leetsubmit")
+        submission =  req.leetsubmit(self.session,self.headers).get_submission(sid)
+        req = self._get_req_imp("leetsubmitsrc")
+        submission = req.leetsubmitsrc().format_submit(submission)
+        problem = self.get_problem(submission['slug'])
+        submission['title'] = problem['title']
+        return  submission
+
     def _format_fav_list(self, fav_list):
         req = self._get_req_imp("leetsrc")
         return req.leetsrc().format_fav_list(fav_list)
@@ -103,6 +117,17 @@ def get_problems_of_fav( fav_name):
     problem = x.get_problems_of_fav(fav_name)
     return problem
 
+def get_submissions(problem ):
+    x = leet("leet");
+    submissions = x.get_submissions(problem)
+    return submissions
+
+def get_submission(sid ):
+    x = leet("leet");
+    submission = x.get_submission(sid)
+    return submission
+
+
 
 if __name__ == "__main__":
     x = leet("leet");
@@ -115,7 +140,6 @@ if __name__ == "__main__":
     print(len(problems))
     print("frist problems:")
     print(problems[0])
-    exit()
 
     print("####################")
     topics = x.get_topics()
@@ -154,7 +178,18 @@ if __name__ == "__main__":
     print(fav[0])
     print("####################")
 
+    submissions = x.get_submissions(fav[0]['slug'])
+    print("first submissions :")
+    print(submissions[0])
+    print("####################")
+
+    submission = x.get_submission(submissions[0]['id'])
+    print("submission :")
+    print(submission)
+    print("####################")
+
     problem = x.get_problem(fav[0]['slug'])
     print("problem :")
     print(problem)
     print("####################")
+
