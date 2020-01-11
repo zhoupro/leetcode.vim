@@ -5,6 +5,14 @@ class leetsrc():
             if problem['id'] in fav_ids:
                 ret.append(problem)
         return ret
+    def format_fav_list(self,fav_lists):
+        ret =[]
+        for fav_list in fav_lists:
+            fav_list["num"] = len(fav_list["questions"])
+            fav_list["name"] = fav_list["name"].replace(' ','')
+            ret.append(fav_list)
+        return ret
+
 
     def format_problems(self, problems):
         ret = []
@@ -32,7 +40,7 @@ class leetsrc():
             return 'X'
         if state == 'notac':
             return '?'
-        return ' '
+        return  ' '
 
 
     def format_problem(self, problem):

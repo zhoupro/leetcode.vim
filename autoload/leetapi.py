@@ -24,7 +24,8 @@ class leet():
 
     def get_fav_list(self):
         req = self._get_req_imp()
-        return req.leet(self.session,self.headers).get_fav_list()
+        fav_list = req.leet(self.session,self.headers).get_fav_list()
+        return self._format_fav_list(fav_list)
 
     def get_problems_of_topic(self, topic):
         req = self._get_req_imp()
@@ -32,15 +33,24 @@ class leet():
         topics["problems"] =  self._format_problems(topics["problems"])
         return topics
 
-    def get_fav_list_problems(self, problems, fav_ids):
+    def _get_fav_list_problems(self, problems, fav_ids):
         req = self._get_req_imp("leetsrc")
         problems = req.leetsrc().get_fav_list_problems(problems, fav_ids)
-        return self._format_problems(problems)
+        return  problems
+
+    def get_problems_of_fav(self,fav_name):
+        fav = self.get_fav_list()
+        all_problems = self.get_problems()
+        return self._get_fav_list_problems(all_problems, fav[0]['questions'])
 
     def get_problem(self, problem_id):
         req = self._get_req_imp()
         problem =  req.leet(self.session,self.headers).get_problem(problem_id)
         return self._format_problem(problem)
+
+    def _format_fav_list(self, fav_list):
+        req = self._get_req_imp("leetsrc")
+        return req.leetsrc().format_fav_list(fav_list)
 
     def _format_problems(self, problems):
         req = self._get_req_imp("leetsrc")
@@ -88,6 +98,12 @@ def get_problem( problem_id):
     problem = x.get_problem(problem_id)
     return problem
 
+def get_problems_of_fav( fav_name):
+    x = leet("leet");
+    problem = x.get_problems_of_fav(fav_name)
+    return problem
+
+
 if __name__ == "__main__":
     x = leet("leet");
 
@@ -99,6 +115,7 @@ if __name__ == "__main__":
     print(len(problems))
     print("frist problems:")
     print(problems[0])
+    exit()
 
     print("####################")
     topics = x.get_topics()
@@ -129,7 +146,8 @@ if __name__ == "__main__":
     print(fav[0])
     print("####################")
 
-    fav = x.get_fav_list_problems(all_problems, fav[0]['questions'])
+    fav_name = fav[0]["name"].replace(' ','')
+    fav = x.get_problems_of_fav(fav_name)
     print("fav list:")
     print(len(fav))
     print("first fav:")
