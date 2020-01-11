@@ -19,7 +19,7 @@ except ImportError:
     vim = None
 
 
-LC_BASE = os.environ['LEETCODE_BASE_URL']
+LC_BASE = 'https://leetcode.com'
 LC_CSRF = LC_BASE + '/ensure_csrf/'
 LC_LOGIN = LC_BASE + '/accounts/login/'
 LC_GRAPHQL = LC_BASE + '/graphql'

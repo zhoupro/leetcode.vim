@@ -7,98 +7,17 @@ import os
 import vim
 
 plugin_dir = vim.eval('s:current_dir')
-thirdparty_dir = os.path.join(plugin_dir, 'thirdparty')
-
 if plugin_dir not in sys.path:
-  sys.path.append(plugin_dir)
-
-if thirdparty_dir not in sys.path:
-  sys.path.append(thirdparty_dir)
-
-if int(vim.eval('g:leetcode_china')):
-    os.environ['LEETCODE_BASE_URL'] = 'https://leetcode-cn.com'
-else:
-    os.environ['LEETCODE_BASE_URL'] = 'https://leetcode.com'
-
-import leetcode
-
-try:
-    import keyring
-    has_keyring = False
-except ImportError:
-    has_keyring = False
+    sys.path.append(plugin_dir)
+import leetapi
 EOF
 
-let s:inited = py3eval('leetcode.inited')
-
-let s:has_keyring = py3eval('has_keyring')
+"let s:inited = py3eval('leetcode.inited')
 
 if g:leetcode_debug
     python3 leetcode.enable_logging()
 endif
 
-function! s:DoSignIn(username, password) abort
-    let expr = printf('leetcode.signin("%s", "%s")', a:username, a:password)
-    let success = py3eval(expr)
-
-    if success
-        echo 'Signed in as ' . a:username
-    endif
-    return success
-endfunction
-
-function! s:LegacySignIn(ask) abort
-    if !s:inited
-        return v:false
-    endif
-
-    let username = 'demo'
-    let password =  'demo'
-    return s:DoSignIn(username, password)
-endfunction
-
-function! s:KeyringSignIn(ask) abort
-    if !s:inited
-        return v:false
-    endif
-
-    if g:leetcode_username != ''
-        let saved_password = py3eval(
-                    \ printf('keyring.get_password("leetcode.vim", "%s")',
-                    \ g:leetcode_username))
-    else
-        let saved_password = v:null
-    endif
-
-    if a:ask || saved_password == v:null
-        let username = input('Username: ', g:leetcode_username)
-        let password = inputsecret('Password: ')
-        let g:leetcode_username = username
-        call py3eval(printf('keyring.set_password("leetcode.vim", "%s", "%s")',
-                    \ username, password))
-        redraw
-    else
-        let username = g:leetcode_username
-        let password = saved_password
-    endif
-
-    return s:DoSignIn(username, password)
-endfunction
-
-function! leetcode#SignIn(ask) abort
-    if s:has_keyring
-        return s:KeyringSignIn(a:ask)
-    else
-        return s:LegacySignIn(a:ask)
-    endif
-endfunction
-
-function! s:CheckSignIn() abort
-    if !py3eval('leetcode.is_login()')
-        return leetcode#SignIn(0)
-    endif
-    return v:true
-endfunction
 
 function! s:SetupBasicSyntax() abort
     syn match lcHeader /\v^#{1,7} .*/
@@ -291,7 +210,7 @@ function! s:ListProblemsOfTopic(topic_slug, refresh) abort
         execute bufnr(buf_name) . 'buffer'
         let saved_view = winsaveview()
         if a:refresh ==# 'redownload'
-            let expr = printf('leetcode.get_problems_of_topic("%s")',
+            let expr = printf('leetapi.get_problems_of_topic("%s")',
                         \ a:topic_slug)
             let b:leetcode_downloaded_problems = py3eval(expr)['problems']
         elseif a:refresh ==# 'norefresh'
@@ -304,7 +223,7 @@ function! s:ListProblemsOfTopic(topic_slug, refresh) abort
         call s:SetupProblemListBuffer()
         let b:leetcode_buffer_type = 'topic'
         let b:leetcode_buffer_topic = a:topic_slug
-        let expr = printf('leetcode.get_problems_of_topic("%s")', a:topic_slug)
+        let expr = printf('leetapi.get_problems_of_topic("%s")', a:topic_slug)
         let b:leetcode_downloaded_problems = py3eval(expr)['problems']
         let b:leetcode_difficulty = 'All'
         let b:leetcode_state = 'All'
@@ -352,72 +271,14 @@ function! s:ChooseTimePeriod() abort
     call s:ListProblemsOfCompany(b:leetcode_buffer_company, 'redraw')
 endfunction
 
-function! s:ListProblemsOfCompany(company_slug, refresh) abort
-    let bufname = 'leetcode:///problems/company/' . a:company_slug
-    if buflisted(bufname)
-        execute bufnr(bufname) . 'buffer'
-        let saved_view = winsaveview()
-        if a:refresh ==# 'redownload'
-            let expr = printf('leetcode.get_problems_of_company("%s")',
-                        \ a:company_slug)
-            let b:leetcode_downloaded_problems = py3eval(expr)['problems']
-        elseif a:refresh ==# 'norefresh'
-            return
-        endif
-        setlocal modifiable
-        silent! normal! ggdG
-    else
-        execute 'rightbelow new ' . bufname
-        call s:SetupProblemListBuffer()
-        let b:leetcode_buffer_type = 'company'
-        let b:leetcode_buffer_company = a:company_slug
-        let b:leetcode_time_period = 'six-months'
-        nnoremap <buffer> t :call s:ChooseTimePeriod()<cr>
-
-        let expr = printf('leetcode.get_problems_of_company("%s")',
-                    \ a:company_slug)
-        let b:leetcode_downloaded_problems = py3eval(expr)['problems']
-        let b:leetcode_difficulty = 'All'
-        let b:leetcode_state = 'All'
-        let b:leetcode_sort_column = 'id'
-        let b:leetcode_sort_order = 'asc'
-    endif
-
-    let b:leetcode_topic_start_line = 0
-    let b:leetcode_topic_end_line = 0
-    let b:leetcode_company_start_line = 0
-    let b:leetcode_company_end_line = 0
-
-    call append('$', ['# LeetCode [company:' . a:company_slug . ']',
-                \ '',
-                \ '## Frequency',
-                \ '  Time period: ' . b:leetcode_time_period,
-                \ '',
-                \ '  t     choose time period',
-                \ ''])
-
-    call s:PrintProblemList()
-
-    silent! normal! ggdd
-    setlocal nomodifiable
-    silent! only
-
-    if exists('saved_view')
-        call winrestview(saved_view)
-    endif
-endfunction
-
 function! leetcode#ListProblems(refresh) abort
-    if s:CheckSignIn() == v:false
-        return
-    endif
 
     let buf_name = 'leetcode:///problems/all'
     if buflisted(buf_name)
         execute bufnr(buf_name) . 'buffer'
         let saved_view = winsaveview()
         if a:refresh ==# 'redownload'
-            let expr = 'leetcode.get_problems(["all"])'
+            let expr = 'leetapi.get_problems(["all"])'
             let b:leetcode_downloaded_problems = py3eval(expr)
         elseif a:refresh ==# 'norefresh'
             return
@@ -428,17 +289,16 @@ function! leetcode#ListProblems(refresh) abort
         execute 'rightbelow new ' . buf_name
         call s:SetupProblemListBuffer()
         let b:leetcode_buffer_type = 'all'
-        let expr = 'leetcode.get_problems(["all"])'
+        let expr = 'leetapi.get_problems(["all"])'
         let b:leetcode_downloaded_problems = py3eval(expr)
         let b:leetcode_difficulty = 'All'
         let b:leetcode_state = 'All'
         let b:leetcode_sort_column = 'id'
         let b:leetcode_sort_order = 'asc'
-        let s:topics_and_companies = py3eval('leetcode.get_topics_and_companies()')
+        let s:get_topics = py3eval('leetapi.get_topics()')
     endif
+    let topics = s:get_topics
 
-    let topics = s:topics_and_companies['topics']
-    let companies = s:topics_and_companies['companies']
 
     " concatenate the topics into a string
     let topic_slugs = map(copy(topics), 'v:val["topic_slug"] . ":" . v:val["num_problems"]')
@@ -449,15 +309,6 @@ function! leetcode#ListProblems(refresh) abort
     let b:leetcode_topic_start_line = line('$')
     call append('$', topic_lines)
     let b:leetcode_topic_end_line = line('$')
-
-    let company_slugs = map(copy(companies), 'v:val["company_slug"] . ":" . v:val["num_problems"]')
-    let company_lines = s:FormatIntoColumns(company_slugs)
-
-    call append('$', ['', '## Companies', ''])
-
-    let b:leetcode_company_start_line = line('$')
-    call append('$', company_lines)
-    let b:leetcode_company_end_line = line('$')
 
     call append('$', '')
     call s:PrintProblemList()
@@ -489,16 +340,6 @@ function! s:HandleProblemListCR() abort
         let topic_slug = s:TagName(topic_slug)
         if topic_slug != ''
             call s:ListProblemsOfTopic(topic_slug, 'norefresh')
-        endif
-        return
-    endif
-
-    if line_nr >= b:leetcode_company_start_line &&
-                \ line_nr < b:leetcode_company_end_line
-        let company_slug = expand('<cWORD>')
-        let company_slug = s:TagName(company_slug)
-        if company_slug != ''
-            call s:ListProblemsOfCompany(company_slug, 'norefresh')
         endif
         return
     endif
@@ -576,8 +417,6 @@ function! s:RedrawProblemList()
         call leetcode#ListProblems('redraw')
     elseif b:leetcode_buffer_type ==# 'topic'
         call s:ListProblemsOfTopic(b:leetcode_buffer_topic, 'redraw')
-    elseif b:leetcode_buffer_type ==# 'company'
-        call s:ListProblemsOfCompany(b:leetcode_buffer_company, 'redraw')
     endif
 endfunction
 
