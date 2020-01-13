@@ -818,9 +818,6 @@ function! s:RunTest() abort
 endfunction
 
 function! leetcode#SubmitSolution() abort
-    if s:CheckSignIn() == v:false
-        return
-    endif
 
     let file_name = s:FileNameToSlug(expand('%:t:r'))
     if file_name == ''
@@ -828,26 +825,20 @@ function! leetcode#SubmitSolution() abort
         return
     endif
 
+    let code = join(getline('1', '$'), "\n")
     let slug = split(file_name, '\.')[0]
     let filetype = s:GuessFileType()
 
-    if has('timers')
-        let expr = printf('leetcode.submit_solution_async("%s", "%s")',
-                    \ slug, filetype)
-        let ok = py3eval(expr)
-        if ok
-            call timer_start(200, function('s:CheckRunCodeTask'),
-                        \ {'repeat': -1})
-        endif
-    else
-        let expr = printf('leetcode.submit_solution("%s", "%s")',
-                    \ slug, filetype)
-        let result = py3eval(expr)
-        if type(result) != v:t_dict
-            return
-        endif
-        call s:ShowRunResultInPreview(result)
+    let args = { 'slug': slug,
+                \ 'filetype': filetype,
+                \ 'code': code}
+
+    let result = py3eval('leetapi.submit_solution(**vim.eval("args"))')
+    if type(result) != v:t_dict
+        return
     endif
+    call s:ShowRunResultInPreview(result)
+
 endfunction
 
 function! s:FormatSection(title, block, level) abort

@@ -9,6 +9,7 @@ class leetsubmit():
     LC_PROBLEM = LC_BASE + '/problems/{slug}/description'
     LC_SUBMISSIONS = LC_BASE + '/api/submissions/{slug}'
     LC_SUBMISSION = LC_BASE + '/submissions/detail/{submission}/'
+    LC_SUBMIT = LC_BASE + '/problems/{slug}/submit/'
 
 
     def __init__(self, session, headers):
@@ -107,3 +108,39 @@ class leetsubmit():
 
     def _break_code_lines(self,s):
         return s.replace('\r\n', '\n').replace('\xa0', ' ').split('\n')
+
+
+    def submit_solution(self,slug, filetype, code=None, problem=None):
+        if not problem:
+            return None
+
+        if code is None:
+            return None
+
+        code = self._remove_description(code)
+
+        headers =  self.headers
+
+        headers['Referer'] = self.LC_PROBLEM.format(slug=slug)
+        body = {'data_input': problem['testcase'],
+                'lang': filetype,
+                'question_id': str(problem['id']),
+                'test_mode': False,
+                'typed_code': code,
+                'judge_type': 'large'}
+        url = self.LC_SUBMIT.format(slug=slug)
+        res = self.session.post(url, json=body, headers=headers)
+        if res.status_code != 200:
+            return None
+        return res.json()['submission_id']
+
+    def _remove_description(self, code):
+        eod = code.find('[End of Description]')
+        if eod == -1:
+            return code
+        eol = code.find('\n', eod)
+        if eol == -1:
+            return ''
+        return code[eol+1:]
+
+
