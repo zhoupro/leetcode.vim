@@ -62,6 +62,16 @@ class leet():
         submission['title'] = problem['title']
         return  submission
 
+    def test_solution(self, problem_id, title, slug, filetype, code, test_input):
+        req = self._get_req_imp("leetest")
+        result_id =  req.leetest(self.session,self.headers).test_solution(problem_id,  slug, filetype, code, test_input )
+
+        req = self._get_req_imp("leetresult")
+        result =  req.leetresult(self.session,self.headers).check_result(result_id)
+        result['testcase'] = test_input.split('\n')
+        result['title'] = title
+        return result
+
     def _format_fav_list(self, fav_list):
         req = self._get_req_imp("leetsrc")
         return req.leetsrc().format_fav_list(fav_list)
@@ -128,6 +138,10 @@ def get_submission(sid ):
     return submission
 
 
+def test_solution( problem_id, title, slug, filetype, code, test_input):
+    x = leet("leet");
+    test = x.test_solution( problem_id, title, slug, filetype, code, test_input)
+    return test
 
 if __name__ == "__main__":
     x = leet("leet");

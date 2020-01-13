@@ -720,10 +720,6 @@ function! s:GuessFileType() abort
 endfunction
 
 function! leetcode#TestSolution() abort
-    if s:CheckSignIn() == v:false
-        return
-    endif
-
     let file_name = s:FileNameToSlug(expand('%:t:r'))
     if file_name == ''
         echo 'no file name'
@@ -736,7 +732,7 @@ function! leetcode#TestSolution() abort
     if exists('b:leetcode_problem')
         let problem = b:leetcode_problem
     else
-        let problem = py3eval(printf('leetcode.get_problem("%s")', slug))
+        let problem = py3eval(printf('leetapi.get_problem("%s")', slug))
         let b:leetcode_problem = problem
     endif
 
@@ -781,7 +777,7 @@ function! s:AskTestInputAndRunTest(problem, filetype, code) abort
     let s:leetcode_code = a:code
     let s:leetcode_filetype = a:filetype
 
-    autocmd BufUnload <buffer> call s:RunTest()
+    autocmd BufLeave <buffer> call s:RunTest()
 endfunction
 
 let s:comment_pattern = '\v(^#.*)|(^\s*$)'
@@ -813,19 +809,12 @@ function! s:RunTest() abort
                 \ 'code': code,
                 \ 'test_input': test_input}
 
-    if has('timers')
-        let ok = py3eval('leetcode.test_solution_async(**vim.eval("args"))')
-        if ok
-            call timer_start(200, function('s:CheckRunCodeTask'),
-                        \ {'repeat': -1})
-        endif
-    else
-        let result = py3eval('leetcode.test_solution(**vim.eval("args"))')
-        if type(result) != v:t_dict
-            return
-        endif
-        call s:ShowRunResultInPreview(result)
+    let result = py3eval('leetapi.test_solution(**vim.eval("args"))')
+    if type(result) != v:t_dict
+        return
     endif
+    call s:ShowRunResultInPreview(result)
+
 endfunction
 
 function! leetcode#SubmitSolution() abort

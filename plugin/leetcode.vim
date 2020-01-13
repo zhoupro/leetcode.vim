@@ -17,7 +17,7 @@ if !exists('g:leetcode_categories')
 endif
 
 if !exists('g:leetcode_solution_filetype')
-    let g:leetcode_solution_filetype = 'cpp'
+    let g:leetcode_solution_filetype = 'golang'
 endif
 
 if !exists('g:leetcode_debug')
