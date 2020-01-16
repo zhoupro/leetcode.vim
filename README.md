@@ -6,12 +6,14 @@ Solve LeetCode problems in Vim!
 
 This Vim plugin is inspired by [skygragon/leetcode-cli][leetcode-cli].
 
-**Important Update! Please setup keyring for password safety:**
+**Attention:** Recently LeetCode used Google reCAPTCHA to enhance security,
+prohibiting automatic login through LeetCode API.
 
-1. Install keyring with `pip3 install keyring --user`
-2. Remove `g:leetcode_password` from your configuration.
-3. The first time you sign in, **leetcode.vim** will prompt for the password
-and store it in keyring.
+The new login procedure needs you to **login in your browser first** so that
+**leetcode.vim** can read the LeetCode session cookie from the browser's cookie
+storage.
+
+Supported browsers are: *** **Firefox**.
 
 ## Installation
 
@@ -20,13 +22,9 @@ for Neovim:
 ```sh
 pip3 install pynvim --user
 ```
-2. Install **keyring**:
-```sh
-pip3 install keyring --user
-```
-3. Install the plugin:
+2. Install the plugin:
 ```vim
-Plug 'ianding1/leetcode.vim'
+Plug 'zhoupro/leetcode.vim'
 ```
 
 ## Quick Start
@@ -50,12 +48,6 @@ nnoremap <leader>li :LeetCodeSignIn<cr>
 
 ## Customization
 
-### `g:leetcode_china`
-
-When non-zero, use LeetCode China accounts instead.
-
-Default value is `0`.
-
 ### `g:leetcode_solution_filetype`
 
 The preferred programming language.
@@ -63,28 +55,17 @@ The preferred programming language.
 Values: `'cpp'`, `'java'`, `'python'`, `'python3'`, `'csharp'`, `'javascript'`,
 `'ruby'`, `'swift'`, `'golang'`, `'scala'`, `'kotlin'`, ``'rust'``.
 
-Default value is `'cpp'`.
+Default value is `'golang'`.
 
-### `g:leetcode_username`
+### `g:leetcode_cookie_path`
+The firefox cookie file path.
 
-Set to the LeetCode username or email for auto login.
+Default value is `/data/www/cookie`.
 
-Default value is `''`.
-
-### `g:leetcode_password`
-
-**Deprecated in favor of keyring.** Set to the LeetCode password for auto login.
-
-If you have installed keyring, then just leave this option blank.
-**leetcode.vim** will prompt for the password the first time you sign in, and
-store the password in keyring.
-
-**WARNING: the password is stored in plain text.**
-
-Default value is `''`.
 
 ## Updates
 
+- 2020/01/16: Rewrite this plugin.
 - 2019/08/01: Support custom test input
 - 2019/07/28: Support showing frequencies and sorting by columns
 - 2019/07/27:
@@ -93,21 +74,6 @@ Default value is `''`.
 - 2019/07/23: Support topics and companies
 
 ## FAQ
-
-### I use Ubuntu and get errors when signing in. How can I fix it?
-
-Ubuntu users might see the error message below when signing in.
-```text
-    raise InitError("Failed to unlock the collection!")
-keyring.errors.InitError: Failed to unlock the collection!
-```
-
-It's caused by the misconfiguration of python-keyring. One way to fix it is to create a file `~/.local/share/python_keyring/keyringrc.cfg` with the following content:
-
-```ini
-[backend]
-default-keyring=keyring.backends.Gnome.Keyring
-```
 
 ### Why can't I test the problem/submit the problem/list the problems?
 
