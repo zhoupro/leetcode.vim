@@ -24,6 +24,10 @@ if !exists('g:leetcode_debug')
     let g:leetcode_debug = 0
 endif
 
+if !exists('g:leetcode_cookie_path')
+    let g:leetcode_cookie_path= '/data/www/cookie'
+endif
+
 command! -nargs=0 LeetCodeList call leetcode#ListProblems('redraw')
 command! -nargs=0 LeetCodeReset call leetcode#ResetSolution(0)
 command! -nargs=0 LeetCodeTest call leetcode#TestSolution()
