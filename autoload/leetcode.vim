@@ -235,6 +235,10 @@ function! s:ListProblemsOfFavList(fav_slug, refresh) abort
     let s:leetcode_topic_end_line = 0
     let b:leetcode_company_start_line = 0
     let b:leetcode_company_end_line = 0
+    let b:leetcode_top_151_list_end_line = 0
+    let b:leetcode_top_151_list_start_line = 0
+    let b:leetcode_fav_list_end_line = 0
+    let b:leetcode_fav_list_start_line = 0
 
     setlocal modifiable
 
@@ -282,6 +286,11 @@ function! s:ListProblemsOfTop151List(top_slug, refresh) abort
     let s:leetcode_topic_end_line = 0
     let b:leetcode_company_start_line = 0
     let b:leetcode_company_end_line = 0
+
+    let b:leetcode_top_151_list_end_line = 0
+    let b:leetcode_top_151_list_start_line = 0
+    let b:leetcode_fav_list_end_line = 0
+    let b:leetcode_fav_list_start_line = 0
 
     setlocal modifiable
 
@@ -331,6 +340,12 @@ function! s:ListProblemsOfTopic(topic_slug, refresh) abort
     let s:leetcode_topic_end_line = 0
     let b:leetcode_company_start_line = 0
     let b:leetcode_company_end_line = 0
+    let b:leetcode_top_151_list_end_line = 0
+    let b:leetcode_top_151_list_start_line = 0
+    let b:leetcode_fav_list_end_line = 0
+    let b:leetcode_fav_list_start_line = 0
+
+
 
     setlocal modifiable
 
@@ -557,8 +572,12 @@ endfunction
 function! s:RedrawProblemList()
     if b:leetcode_buffer_type ==# 'all'
         call leetcode#ListProblems('redraw')
+    elseif b:leetcode_buffer_type ==# 'fav'
+        call s:ListProblemsOfFavList(b:leetcode_buffer_topic, 'redraw')
     elseif b:leetcode_buffer_type ==# 'topic'
         call s:ListProblemsOfTopic(b:leetcode_buffer_topic, 'redraw')
+    elseif b:leetcode_buffer_type ==# 'top'
+        call s:ListProblemsOfTop151List(b:leetcode_buffer_topic, 'redraw')
     endif
 endfunction
 
