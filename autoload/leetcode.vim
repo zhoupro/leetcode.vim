@@ -251,6 +251,54 @@ function! s:ListProblemsOfFavList(fav_slug, refresh) abort
     endif
 endfunction
 
+function! s:ListProblemsOfTop151List(top_slug, refresh) abort
+    let buf_name = 'leetcode:///problems/topic/' . a:top_slug
+    if buflisted(buf_name)
+        execute bufnr(buf_name) . 'buffer'
+        let saved_view = winsaveview()
+        if a:refresh ==# 'redownload'
+            let expr = 'leetapi.get_problems_of_top151()'
+            let b:leetcode_downloaded_problems = py3eval(expr)
+        elseif a:refresh ==# 'norefresh'
+            return
+        endif
+        setlocal modifiable
+        silent! normal! ggdG
+    else
+        execute 'rightbelow new ' . buf_name
+        call s:SetupProblemListBuffer()
+        let b:leetcode_buffer_type = 'top'
+        let b:leetcode_buffer_topic = a:top_slug
+
+        let expr = 'leetapi.get_problems_of_top151()'
+        let b:leetcode_downloaded_problems = py3eval(expr)
+        let b:leetcode_difficulty = 'All'
+        let b:leetcode_state = 'All'
+        let b:leetcode_sort_column = 'id'
+        let b:leetcode_sort_order = 'asc'
+    endif
+
+    let s:leetcode_topic_start_line = 0
+    let s:leetcode_topic_end_line = 0
+    let b:leetcode_company_start_line = 0
+    let b:leetcode_company_end_line = 0
+
+    setlocal modifiable
+
+    call append('$', ['# LeetCode [Top151:' . a:top_slug . ']', ''])
+
+    call s:PrintProblemList()
+
+    silent! normal! ggdd
+    setlocal nomodifiable
+    silent! only
+
+    if exists('saved_view')
+        call winrestview(saved_view)
+    endif
+endfunction
+
+
 
 function! s:ListProblemsOfTopic(topic_slug, refresh) abort
     let buf_name = 'leetcode:///problems/topic/' . a:topic_slug
@@ -345,9 +393,11 @@ function! leetcode#ListProblems(refresh) abort
         let b:leetcode_sort_order = 'asc'
         let s:get_topics = py3eval('leetapi.get_topics()')
         let s:get_fav_list = py3eval('leetapi.get_fav_list()')
+        let s:get_top_151_list = py3eval('leetapi.get_top_151_list()')
     endif
     let topics = s:get_topics
     let fav_list = s:get_fav_list
+    let top_151_list = s:get_top_151_list
 
 
     " concatenate the topics into a string
@@ -371,6 +421,17 @@ function! leetcode#ListProblems(refresh) abort
     let s:leetcode_fav_list_end_line = line('$')
 
     call append('$', '')
+
+    let top_151_list_slugs = map(copy(top_151_list), 'v:val["name"] . ":" . v:val["num"]')
+    let top_151_list_lines = s:FormatIntoColumns(top_151_list_slugs)
+
+    call append('$', [ '## Top151', ''])
+
+    let s:leetcode_top_151_list_start_line = line('$')
+    call append('$', top_151_list_lines)
+    let s:leetcode_top_151_list_end_line = line('$')
+    call append('$', '')
+
     call s:PrintProblemList()
 
     silent! normal! ggdd
@@ -413,6 +474,17 @@ function! s:HandleProblemListCR() abort
         endif
         return
     endif
+
+    if line_nr >= s:leetcode_top_151_list_start_line &&
+                \ line_nr < s:leetcode_top_151_list_end_line
+        let top_slug = expand('<cWORD>')
+        let top_slug = s:TagName(top_slug)
+        if top_slug != ''
+            call s:ListProblemsOfTop151List(top_slug,'norefresh')
+        endif
+        return
+    endif
+
 
     if line_nr >= s:leetcode_difficulty_start_line &&
                 \ line_nr < s:leetcode_difficulty_end_line

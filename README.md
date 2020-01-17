@@ -65,6 +65,7 @@ Default value is `/data/www/cookie`.
 
 ## Updates
 
+- 2020/01/17: Add Top151 list. [leetcode151][top151]
 - 2020/01/16: Rewrite this plugin.
 - 2019/08/01: Support custom test input
 - 2019/07/28: Support showing frequencies and sorting by columns
@@ -86,6 +87,7 @@ doing other things.~~ (No longer having this problem)
 According to issue [#5][#5], **if the email address is not active, then you can
 only login and download problems, but cannot test and submit any code.**
 
+[top151]: https://github.com/soulmachine/leetcode
 [thumbnail]: https://asciinema.org/a/200004.png
 [asciicast]: https://asciinema.org/a/200004
 [leetcode-cli]: https://github.com/skygragon/leetcode-cli

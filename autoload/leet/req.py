@@ -12,7 +12,7 @@ class req():
     LC_LOGIN = LC_BASE + '/accounts/login/'
 
     def get_curl(self):
-        cookiepath = vim.eval("g:leetcode_cookie_path")
+        #cookiepath = vim.eval("g:leetcode_cookie_path")
         session = requests.Session()
         cookie = self._getcookiefromchrome('.leetcode.com',cookiepath='/data/www/cookie')
         session.cookies = requests.utils.add_dict_to_cookiejar(session.cookies, cookie)

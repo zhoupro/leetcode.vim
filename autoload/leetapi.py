@@ -27,6 +27,15 @@ class leet():
         fav_list = req.leet(self.session,self.headers).get_fav_list()
         return self._format_fav_list(fav_list)
 
+    def get_top_151_list(self):
+        problems = self.get_problems_of_top151()
+        top_list = {}
+        top_list["name"] = "top151"
+        top_list["num"] = len(problems)
+        ret = []
+        ret.append(top_list)
+        return ret
+
     def get_problems_of_topic(self, topic):
         req = self._get_req_imp()
         topics = req.leet(self.session,self.headers).get_problems_of_topic(topic)
@@ -37,6 +46,13 @@ class leet():
         req = self._get_req_imp("leetsrc")
         problems = req.leetsrc().get_fav_list_problems(problems, fav_ids)
         return  problems
+
+    def get_problems_of_top151(self ):
+        req = self._get_req_imp("leetsrc")
+        all_problems = self.get_problems()
+        problems = req.leetsrc().get_151_problems(all_problems )
+        return  problems
+
 
     def get_problems_of_fav(self,fav_name):
         fav = self.get_fav_list()
@@ -134,8 +150,17 @@ def get_problem( problem_id):
 
 def get_problems_of_fav( fav_name):
     x = leet("leet");
-    problem = x.get_problems_of_fav(fav_name)
-    return problem
+    problems = x.get_problems_of_fav(fav_name)
+    return problems
+
+def get_problems_of_top151( ):
+    x = leet("leet");
+    problems = x.get_problems_of_top151()
+    return problems
+def get_top_151_list():
+    x = leet("leet");
+    lists = x.get_top_151_list()
+    return lists
 
 def get_submissions(problem ):
     x = leet("leet");
@@ -221,5 +246,19 @@ if __name__ == "__main__":
     problem = x.get_problem(fav[0]['slug'])
     print("problem :")
     print(problem)
+    print("####################")
+
+
+    problems = x.get_problems_of_top151()
+    print("num:")
+    print(len(problems))
+    print("151 problem  :")
+    print(problems[0])
+    print("####################")
+
+
+    top_list = x.get_top_151_list()
+    print("151 list  :")
+    print(top_list)
     print("####################")
 

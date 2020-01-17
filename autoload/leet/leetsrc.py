@@ -1,4 +1,19 @@
+import os
 class leetsrc():
+    def get_151_problems_slug(self):
+        f = open(os.path.dirname(__file__)+"/151problem.txt")
+        slugs = f.read().splitlines()
+        f.close()
+        return slugs
+
+    def get_151_problems(self,problems):
+        ret =[]
+        slugs = self.get_151_problems_slug()
+        for problem in problems:
+            if problem['slug'] in slugs:
+                ret.append(problem)
+        return ret
+
     def get_fav_list_problems(self,problems, fav_ids):
         ret =[]
         for problem in problems:
