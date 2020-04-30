@@ -1,6 +1,8 @@
 import requests
 import sqlite3
 
+import os
+
 try:
     import vim
 except ImportError:
@@ -12,9 +14,9 @@ class req():
     LC_LOGIN = LC_BASE + '/accounts/login/'
 
     def get_curl(self):
-        #cookiepath = vim.eval("g:leetcode_cookie_path")
+        cookiepath = os.getenv('cookie_path')
         session = requests.Session()
-        cookie = self._getcookiefromchrome('.leetcode.com',cookiepath='/data/www/cookie')
+        cookie = self._getcookiefromchrome('.leetcode.com',cookiepath)
         session.cookies = requests.utils.add_dict_to_cookiejar(session.cookies, cookie)
         res = session.get(self.LC_LOGIN)
         if res.status_code != 200:
@@ -30,6 +32,7 @@ class req():
         return cookies
 
     def make_headers(self, session):
+
         headers = {'Origin': self.LC_BASE,
              'Referer': self.LC_BASE,
              'X-CSRFToken': session.cookies['csrftoken'],
