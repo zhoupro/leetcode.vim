@@ -25,7 +25,7 @@ class req():
 
     def get_curl(self):
         cookiepath = os.getenv('cookie_path')
-        if cookiepath == '':
+        if cookiepath == None:
             cookiepath = '/home/prozhou/.mozilla/firefox/c0lpjfry.default-release/cookies.sqlite'
 
         if self.source == "leet":

@@ -34,6 +34,7 @@ class leetsrc():
         for problem in problems:
             problem["level"] = self._level_to_name(problem["level"])
             problem["state"] = self._state_to_flag(problem["state"])
+            problem["title"] = problem["slug"]
             ret.append(problem)
         return ret
 

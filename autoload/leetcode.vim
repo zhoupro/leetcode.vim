@@ -528,9 +528,12 @@ function! s:HandleProblemListCR() abort
 
     if line_nr >= s:leetcode_problem_start_line &&
                 \ line_nr < s:leetcode_problem_end_line
-        let problem_id = s:ProblemIdFromNr(line_nr)
-        let problem = s:GetProblem(problem_id)
-        let problem_slug = problem['slug']
+        " let problem_id = s:ProblemIdFromNr(line_nr)
+        " let problem = s:GetProblem(problem_id)
+        " let problem_slug = problem['slug']
+
+        let problem_slug = s:ProblemSlugFromNr(line_nr)
+
         let problem_ext = s:SolutionFileExt(g:leetcode_solution_filetype)
         let problem_file_name = printf('%s.%s', s:SlugToFileName(problem_slug),
                     \ problem_ext)
@@ -603,6 +606,17 @@ function! s:ProblemIdFromNr(nr)
     let strid = trim(items[1], ' ')
     return strid
 endfunction
+
+function! s:ProblemSlugFromNr(nr)
+    let content = getline(a:nr)
+    let items = split(content, '|')
+    if len(items) < 2
+        return -1
+    endif
+    let slug = trim(items[2], ' ')
+    return slug 
+endfunction
+
 
 function! s:HandleProblemListR() abort
     if b:leetcode_buffer_type ==# 'all'

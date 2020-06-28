@@ -123,7 +123,7 @@ class leet():
 def get_problems( cat=["all"]):
     x = leet("leet");
     problems = x.get_problems()
-    return problems
+    return sorted(problems, key = lambda i: i['fid'])
 
 def get_topics():
     x = leet("leet");
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     print("all problems nums:")
     print(len(problems))
     print("frist problems:")
-    print(problems[0:2])
+    print(problems)
 
     sys.exit()
 
