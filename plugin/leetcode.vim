@@ -25,6 +25,7 @@ if !exists('g:leetcode_debug')
 endif
 
 let $cookie_path = '/home/prozhou/.mozilla/firefox/c0lpjfry.default-release/cookies.sqlite'
+let $leet_source = 'leet'
 
 command! -nargs=0 LeetCodeList call leetcode#ListProblems('redraw')
 command! -nargs=0 LeetCodeReset call leetcode#ResetSolution(0)

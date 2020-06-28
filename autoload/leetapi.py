@@ -1,30 +1,34 @@
 import importlib
 import req
+import sys
+import os
 
 
 class leet():
     arg = "leet"
     session = ""
     headers = ""
+    leet_source = ""
     def __init__(self, imp):
         x = req.req("leet")
         self.session = x.get_curl()
         self.headers = x.make_headers(self.session)
         self.imp = imp
+        self.leet_source = os.getenv('leet_source')
 
     def get_problems(self, cat=["all"]):
         req = self._get_req_imp()
-        problems = req.leet(self.session,self.headers).get_problems(cat)
+        problems = req.leet(self.session,self.headers,self.leet_source).get_problems(cat)
         return  self._format_problems(problems)
 
     def get_topics(self):
         req = self._get_req_imp()
-        return req.leet(self.session,self.headers).get_topics()
+        return req.leet(self.session,self.headers,self.leet_source).get_topics()
 
 
     def get_fav_list(self):
         req = self._get_req_imp()
-        fav_list = req.leet(self.session,self.headers).get_fav_list()
+        fav_list = req.leet(self.session,self.headers,self.leet_source).get_fav_list()
         return self._format_fav_list(fav_list)
 
     def get_top_151_list(self):
@@ -38,7 +42,7 @@ class leet():
 
     def get_problems_of_topic(self, topic):
         req = self._get_req_imp()
-        topics = req.leet(self.session,self.headers).get_problems_of_topic(topic)
+        topics = req.leet(self.session,self.headers,self.leet_source).get_problems_of_topic(topic)
         topics["problems"] =  self._format_problems(topics["problems"])
         return topics
 
@@ -61,17 +65,17 @@ class leet():
 
     def get_problem(self, problem_id):
         req = self._get_req_imp()
-        problem =  req.leet(self.session,self.headers).get_problem(problem_id)
+        problem =  req.leet(self.session,self.headers,self.leet_source).get_problem(problem_id)
         return self._format_problem(problem)
 
     def get_submissions(self, problem):
         req = self._get_req_imp("leetsubmit")
-        submissions =  req.leetsubmit(self.session,self.headers).get_submissions(problem)
+        submissions =  req.leetsubmit(self.session,self.headers,self.leet_source).get_submissions(problem)
         return  submissions
 
     def get_submission(self, sid):
         req = self._get_req_imp("leetsubmit")
-        submission =  req.leetsubmit(self.session,self.headers).get_submission(sid)
+        submission =  req.leetsubmit(self.session,self.headers,self.leet_source).get_submission(sid)
         req = self._get_req_imp("leetsubmitsrc")
         submission = req.leetsubmitsrc().format_submit(submission)
         problem = self.get_problem(submission['slug'])
@@ -80,10 +84,10 @@ class leet():
 
     def test_solution(self, problem_id, title, slug, filetype, code, test_input):
         req = self._get_req_imp("leetest")
-        result_id =  req.leetest(self.session,self.headers).test_solution(problem_id,  slug, filetype, code, test_input )
+        result_id =  req.leetest(self.session,self.headers,self.leet_source).test_solution(problem_id,  slug, filetype, code, test_input )
 
         req = self._get_req_imp("leetresult")
-        result =  req.leetresult(self.session,self.headers).check_result(result_id)
+        result =  req.leetresult(self.session,self.headers,self.leet_source).check_result(result_id)
         result['testcase'] = test_input.split('\n')
         result['title'] = title
         return result
@@ -91,10 +95,10 @@ class leet():
     def submit_solution(self,slug, filetype, code=None):
         problem = self.get_problem(slug)
         req = self._get_req_imp("leetsubmit")
-        result_id =  req.leetsubmit(self.session,self.headers).submit_solution(slug, filetype, code, problem)
+        result_id =  req.leetsubmit(self.session,self.headers,self.leet_source).submit_solution(slug, filetype, code, problem)
 
         req = self._get_req_imp("leetresult")
-        result =  req.leetresult(self.session,self.headers).check_result(result_id)
+        result =  req.leetresult(self.session,self.headers,self.leet_source).check_result(result_id)
         result['title'] = problem["title"]
         return result
 
@@ -194,7 +198,9 @@ if __name__ == "__main__":
     print("all problems nums:")
     print(len(problems))
     print("frist problems:")
-    print(problems[0])
+    print(problems[0:2])
+
+    sys.exit()
 
     print("####################")
     topics = x.get_topics()

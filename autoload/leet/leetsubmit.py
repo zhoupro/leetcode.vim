@@ -1,20 +1,27 @@
 from bs4 import BeautifulSoup
 import json
 import re
+from . import   mycfg
 
 class leetsubmit():
     session=""
     headers = ""
-    LC_BASE = 'https://leetcode.com'
-    LC_PROBLEM = LC_BASE + '/problems/{slug}/description'
-    LC_SUBMISSIONS = LC_BASE + '/api/submissions/{slug}'
-    LC_SUBMISSION = LC_BASE + '/submissions/detail/{submission}/'
-    LC_SUBMIT = LC_BASE + '/problems/{slug}/submit/'
+    LC_BASE = ''
+    LC_PROBLEM = ''
+    LC_SUBMISSIONS =  ''
+    LC_SUBMISSION =  ''
+    LC_SUBMIT = ''
 
 
-    def __init__(self, session, headers):
+    def __init__(self, session, headers, source="leet"):
         self.session= session
         self.headers = headers
+
+        self.LC_BASE = mycfg.getConfig(source,"LC_BASE")
+        self.LC_PROBLEM= mycfg.getConfig(source,"LC_PROBLEM")
+        self.LC_SUBMISSION= mycfg.getConfig(source,"LC_SUBMISSION")
+        self.LC_SUBMISSIONS= mycfg.getConfig(source,"LC_SUBMISSIONS")
+        self.LC_SUBMIT= mycfg.getConfig(source,"LC_SUBMIT")
 
     def get_submissions(self, slug):
         headers = self.headers

@@ -190,6 +190,7 @@ def _get_category_problems(category):
 
 
 def get_problems(categories):
+    print("here")
     assert is_login()
     problems = []
     for c in categories:

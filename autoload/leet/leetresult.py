@@ -1,15 +1,19 @@
 import time
+from . import   mycfg
 
 class leetresult():
     session=""
     headers = ""
-    LC_BASE = 'https://leetcode.com'
-    LC_CHECK = LC_BASE + '/submissions/detail/{submission}/check/'
+    LC_BASE = ''
+    LC_CHECK = ''
 
 
-    def __init__(self, session, headers):
+    def __init__(self, session, headers, source="leet"):
         self.session= session
         self.headers = headers
+
+        self.LC_BASE = mycfg.getConfig(source,"LC_BASE")
+        self.LC_CHECK = mycfg.getConfig(source,"LC_CHECK")
 
     def check_result(self,submission_id):
         while True:

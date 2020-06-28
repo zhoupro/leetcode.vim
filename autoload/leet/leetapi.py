@@ -1,21 +1,31 @@
+import sys
 from bs4 import BeautifulSoup
 import json
+from . import   mycfg
+
 
 class leet():
     session=""
     headers = ""
-    LC_BASE = 'https://leetcode.com'
-    LC_CATEGORY_PROBLEMS = LC_BASE + '/api/problems/{category}'
-    LC_PROBLEM_SET_ALL = LC_BASE + '/problemset/all/'
-    LC_PROBLEM_FAV = LC_BASE + '/problems/api/favorites/'
-    LC_GRAPHQL = LC_BASE + '/graphql'
-    LC_PROBLEM = LC_BASE + '/problems/{slug}/description'
+    LC_BASE = ""
+    LC_PROBLEM = ""
+    LC_CATEGORY_PROBLEMS =  ""
+    LC_PROBLEM_SET_ALL =  ""
+    LC_PROBLEM_FAV = ""
+    LC_GRAPHQL =  ""
     EMPTY_FREQUENCIES = [0, 0, 0, 0, 0, 0, 0, 0]
 
 
-    def __init__(self, session, headers):
+    def __init__(self, session, headers, source="leet"):
         self.session= session
         self.headers = headers
+        self.LC_BASE = mycfg.getConfig(source,"LC_BASE")
+        self.LC_PROBLEM= mycfg.getConfig(source,"LC_PROBLEM")
+        self.LC_CATEGORY_PROBLEMS= mycfg.getConfig(source,"LC_CATEGORY_PROBLEMS")
+        self.LC_PROBLEM_SET_ALL= mycfg.getConfig(source,"LC_PROBLEM_SET_ALL")
+        self.LC_PROBLEM_FAV= mycfg.getConfig(source,"LC_PROBLEM_FAV")
+        self.LC_GRAPHQL= mycfg.getConfig(source,"LC_GRAPHQL")
+
 
     def _get_category_problems(self,category):
         headers = self.headers

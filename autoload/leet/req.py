@@ -1,6 +1,8 @@
 import requests
 import sqlite3
 
+from . import   mycfg
+
 import os
 
 try:
@@ -10,13 +12,29 @@ except ImportError:
 
 class req():
 
-    LC_BASE = 'https://leetcode.com'
-    LC_LOGIN = LC_BASE + '/accounts/login/'
+    LC_BASE = ''
+    LC_LOGIN = ''
+    source = ''
+
+    def __init__(self, source="leet"):
+        self.source = source
+
+        self.LC_BASE = mycfg.getConfig(source,"LC_BASE")
+        self.LC_LOGIN= mycfg.getConfig(source,"LC_LOGIN")
+
 
     def get_curl(self):
         cookiepath = os.getenv('cookie_path')
+        if cookiepath == '':
+            cookiepath = '/home/prozhou/.mozilla/firefox/c0lpjfry.default-release/cookies.sqlite'
+
+        if self.source == "leet":
+            site = ".leetcode.com"
+        else:
+            site = ".leetcode-cn.com"
+
         session = requests.Session()
-        cookie = self._getcookiefromchrome('.leetcode.com',cookiepath)
+        cookie = self._getcookiefromchrome(site , cookiepath)
         session.cookies = requests.utils.add_dict_to_cookiejar(session.cookies, cookie)
         res = session.get(self.LC_LOGIN)
         if res.status_code != 200:
