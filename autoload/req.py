@@ -7,9 +7,9 @@ class req():
     def __call__(self, arg):
         print(arg)
 
-    def get_curl(self):
+    def get_curl(self, source):
         req = self._get_req_imp()
-        return req.req().get_curl()
+        return req.req().get_curl(source)
 
     def make_headers(self, session):
         req = self._get_req_imp()

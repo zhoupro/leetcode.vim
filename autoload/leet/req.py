@@ -5,25 +5,20 @@ from . import   mycfg
 
 import os
 
-try:
-    import vim
-except ImportError:
-    vim = None
-
 class req():
 
     LC_BASE = ''
     LC_LOGIN = ''
     source = ''
 
-    def __init__(self, source="leet"):
+
+    def get_curl(self, source="leet"):
+
         self.source = source
 
         self.LC_BASE = mycfg.getConfig(source,"LC_BASE")
         self.LC_LOGIN= mycfg.getConfig(source,"LC_LOGIN")
 
-
-    def get_curl(self):
         cookiepath = os.getenv('cookie_path')
         if cookiepath == None:
             cookiepath = '/home/prozhou/.mozilla/firefox/c0lpjfry.default-release/cookies.sqlite'

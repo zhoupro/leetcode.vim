@@ -10,15 +10,17 @@ class leet():
     headers = ""
     leet_source = ""
     def __init__(self, imp):
-        x = req.req("leet")
-        self.session = x.get_curl()
-        self.headers = x.make_headers(self.session)
-        self.imp = imp
         source = os.getenv("leet_source")
         if source != None:
             self.leet_source =  source
         else:
             self.leet_source = "leet-cn"
+
+        x = req.req("leet")
+        self.session = x.get_curl(self.leet_source)
+        self.headers = x.make_headers(self.session)
+        self.imp = imp
+
 
     def get_problems(self, cat=["all"]):
         req = self._get_req_imp()
