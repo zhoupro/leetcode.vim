@@ -528,11 +528,11 @@ function! s:HandleProblemListCR() abort
 
     if line_nr >= s:leetcode_problem_start_line &&
                 \ line_nr < s:leetcode_problem_end_line
-        " let problem_id = s:ProblemIdFromNr(line_nr)
-        " let problem = s:GetProblem(problem_id)
-        " let problem_slug = problem['slug']
+        let problem_id = s:ProblemIdFromNr(line_nr)
+        let problem = s:GetProblem(problem_id)
+        let problem_slug = problem['slug']
 
-        let problem_slug = s:ProblemSlugFromNr(line_nr)
+        " let problem_slug = s:ProblemSlugFromNr(line_nr)
 
         let problem_ext = s:SolutionFileExt(g:leetcode_solution_filetype)
         let problem_file_name = printf('%s.%s', s:SlugToFileName(problem_slug),

@@ -14,7 +14,11 @@ class leet():
         self.session = x.get_curl()
         self.headers = x.make_headers(self.session)
         self.imp = imp
-        self.leet_source = os.getenv('leet_source')
+        source = os.getenv("leet_source")
+        if source != None:
+            self.leet_source =  source
+        else:
+            self.leet_source = "leet-cn"
 
     def get_problems(self, cat=["all"]):
         req = self._get_req_imp()
