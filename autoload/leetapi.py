@@ -33,9 +33,28 @@ class leet():
 
 
     def get_fav_list(self):
+
+        return self.get_problemset_list()
+
         req = self._get_req_imp()
         fav_list = req.leet(self.session,self.headers,self.leet_source).get_fav_list()
         return self._format_fav_list(fav_list)
+
+    def get_problemset_list(self):
+        req = self._get_req_imp()
+        problemset_list = req.leet(self.session,self.headers,self.leet_source).get_problemset_list()
+
+        for item in problemset_list["categories"]["0"]:
+            item["cat"] = "cat"
+
+        for item in problemset_list["categories"]["1"]:
+            item["cat"] = "fav"
+
+        problemset_list["categories"]["0"].extend(problemset_list["categories"]["1"])
+        ret = problemset_list["categories"]["0"]
+        for item in ret:
+            item["name"] = item["title"]
+        return ret
 
     def get_top_151_list(self):
         problems = self.get_problems_of_top151()
@@ -63,11 +82,27 @@ class leet():
         problems = req.leetsrc().get_151_problems(all_problems )
         return  problems
 
+    def _get_problem_questions(self, question_url, cat ):
+        req = self._get_req_imp()
+        problems = req.leet(self.session,self.headers,self.leet_source).get_problemset_list_ids(question_url, cat)
+        ids = []
+        for item in problems["stat_status_pairs"]:
+            ids.append(item["stat"]["question_id"])
+        return  ids
+
+
 
     def get_problems_of_fav(self,fav_name):
+
         fav = self.get_fav_list()
+        question_url = ""
+        for item in fav:
+            if fav_name in item["name"]:
+                question_url = item["slug"]
+                question_cat = item["cat"]
+        questions = self._get_problem_questions(question_url, question_cat)
         all_problems = self.get_problems()
-        return self._get_fav_list_problems(all_problems, fav[0]['questions'])
+        return self._get_fav_list_problems(all_problems, questions)
 
     def get_problem(self, problem_id):
         req = self._get_req_imp()
@@ -142,6 +177,11 @@ def get_fav_list():
     fav_list = x.get_fav_list()
     return  fav_list
 
+def get_problemset_list():
+    x = leet("leet");
+    x.get_problemset_list()
+
+
 def get_problems_of_topic( topic):
 
     x = leet("leet");
@@ -196,7 +236,16 @@ def submit_solution(slug, filetype, code=None):
 
 if __name__ == "__main__":
     x = leet("leet");
+    print("####################")
+    fav = x.get_fav_list()
+    print(fav)
+    print("####################")
 
+
+    fav = x.get_problems_of_fav(fav[len(fav)-2]["name"])
+    print(fav)
+
+    sys.exit()
     problems = x.get_problems()
     all_problems = problems
 

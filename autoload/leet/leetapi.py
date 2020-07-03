@@ -13,6 +13,7 @@ class leet():
     LC_PROBLEM_SET_ALL =  ""
     LC_PROBLEM_FAV = ""
     LC_GRAPHQL =  ""
+    LC_PROBLEM_SET_CAT_IDS = ""
     EMPTY_FREQUENCIES = [0, 0, 0, 0, 0, 0, 0, 0]
 
 
@@ -25,6 +26,8 @@ class leet():
         self.LC_PROBLEM_SET_ALL= mycfg.getConfig(source,"LC_PROBLEM_SET_ALL")
         self.LC_PROBLEM_FAV= mycfg.getConfig(source,"LC_PROBLEM_FAV")
         self.LC_GRAPHQL= mycfg.getConfig(source,"LC_GRAPHQL")
+        self.LC_PROBLEM_SET_CAT = mycfg.getConfig(source,"LC_PROBLEM_SET_CAT")
+
 
 
     def _get_category_problems(self,category):
@@ -107,6 +110,28 @@ class leet():
             return []
         content = res.json()
         return content
+
+    def get_problemset_list(self):
+        headers = self.headers
+        res = self.session.get(self.LC_PROBLEM_SET_CAT, headers=headers)
+        if res.status_code != 200:
+            return []
+        content = res.json()
+        return content
+
+    def get_problemset_list_ids(self, slug, cat):
+        headers = self.headers
+        if cat == "fav":
+            url = self.LC_BASE + "/api/problems/favorite_lists/" + slug
+        else:
+            url = self.LC_BASE + "/api/problems/" + slug
+        res = self.session.get(url, headers=headers)
+        if res.status_code != 200:
+            return []
+        content = res.json()
+        return content
+
+
 
     def get_problems_of_topic(self, topic_slug):
         request_body = {

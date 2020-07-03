@@ -426,7 +426,7 @@ function! leetcode#ListProblems(refresh) abort
     let s:leetcode_topic_end_line = line('$')
     call append('$', '')
 
-    let fav_list_slugs = map(copy(fav_list), 'v:val["name"] . ":" . v:val["num"]')
+    let fav_list_slugs = map(copy(fav_list), 'v:val["name"]')
     let fav_list_lines = s:FormatIntoColumns(fav_list_slugs)
 
     call append('$', [ '## Fav', ''])
@@ -483,7 +483,7 @@ function! s:HandleProblemListCR() abort
     if line_nr >= s:leetcode_fav_list_start_line &&
                 \ line_nr < s:leetcode_fav_list_end_line
         let fav_slug = expand('<cWORD>')
-        let fav_slug = s:TagName(fav_slug)
+
         if fav_slug != ''
             call s:ListProblemsOfFavList(fav_slug, 'norefresh')
         endif
