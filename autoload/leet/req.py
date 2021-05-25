@@ -4,6 +4,7 @@ import sqlite3
 from . import   mycfg
 
 import os
+import subprocess
 
 class req():
 
@@ -19,9 +20,16 @@ class req():
         self.LC_BASE = mycfg.getConfig(source,"LC_BASE")
         self.LC_LOGIN= mycfg.getConfig(source,"LC_LOGIN")
 
-        cookiepath = os.getenv('cookie_path')
-        if cookiepath == None:
-            cookiepath = '/home/prozhou/.mozilla/firefox/c0lpjfry.default-release/cookies.sqlite'
+        
+
+        cookiepath = "/tmp/cookies.sqlite"
+        findFlag, result = subprocess.getstatusoutput("find ~/.mozilla -name cookies.sqlite")
+        if findFlag != 0:
+            return False
+
+        moveFlag, resutl = subprocess.getstatusoutput("rm -f {} && cp {} {}".format(cookiepath,result, cookiepath))
+        if findFlag != 0: 
+            return False
 
         if self.source == "leet":
             site = ".leetcode.com"
