@@ -23,7 +23,9 @@ class req():
         
 
         cookiepath = "/tmp/cookies.sqlite"
-        findFlag, result = subprocess.getstatusoutput("find ~/.mozilla -name cookies.sqlite")
+
+        firefox_home = os.getenv("firefox_home")
+        findFlag, result = subprocess.getstatusoutput("find " + firefox_home + "/.mozilla -name cookies.sqlite")
         if findFlag != 0:
             return False
 

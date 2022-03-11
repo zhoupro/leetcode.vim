@@ -1,7 +1,7 @@
 " vim: sts=4 sw=4 expandtab
 
 if !exists('g:leetcode_china')
-    let g:leetcode_china = 0
+    let g:leetcode_china = 1
 endif
 
 if !exists('g:leetcode_username')
@@ -24,7 +24,18 @@ if !exists('g:leetcode_debug')
     let g:leetcode_debug = 0
 endif
 
-let $leet_source = 'leet-cn'
+if !exists('g:leetcode_firefox_home')
+    let $firefox_home = '~'
+else
+    let $firefox_home = g:leetcode_firefox_home
+endif
+
+if g:leetcode_china == 1
+    let $leet_source = 'leet-cn'
+else
+    let $leet_source = 'leet'
+endif
+
 
 command! -nargs=0 LeetCodeList call leetcode#ListProblems('redraw')
 command! -nargs=0 LeetCodeReset call leetcode#ResetSolution(0)
