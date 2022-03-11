@@ -24,7 +24,8 @@ pip3 install pynvim --user
 ```
 2. Install the plugin:
 ```vim
-Plug 'zhoupro/leetcode.vim'
+Plug 'zhoupro/leetcode.vim', { 'do': 'pip3 install -r requirements.txt' }
+
 ```
 
 ## Quick Start
@@ -32,7 +33,6 @@ Plug 'zhoupro/leetcode.vim'
 - `:LeetCodeList`: browse the problems.
 - `:LeetCodeTest`: run the code with the default test case.
 - `:LeetCodeSubmit`: submit the code.
-- `:LeetCodeSignIn`: manually sign in.
 
 ## Key mappings
 
@@ -43,7 +43,6 @@ lines to your **.vimrc** to set up the key mappings.
 nnoremap <leader>ll :LeetCodeList<cr>
 nnoremap <leader>lt :LeetCodeTest<cr>
 nnoremap <leader>ls :LeetCodeSubmit<cr>
-nnoremap <leader>li :LeetCodeSignIn<cr>
 ```
 
 ## Customization
@@ -52,15 +51,14 @@ nnoremap <leader>li :LeetCodeSignIn<cr>
 
 The preferred programming language.
 
-Values: `'cpp'`, `'java'`, `'python'`, `'python3'`, `'csharp'`, `'javascript'`,
-`'ruby'`, `'swift'`, `'golang'`, `'scala'`, `'kotlin'`, ``'rust'``.
+Values:  `'python'`, `'python3'`, `'golang'` .
 
 Default value is `'golang'`.
 
-### `g:leetcode_cookie_path`
-The firefox cookie file path.
+### `g:leetcode_firefox_home`
 
-Default value is `/data/www/cookie`.
+The firefox user home
+Default value is `~`.
 
 
 ## Updates
