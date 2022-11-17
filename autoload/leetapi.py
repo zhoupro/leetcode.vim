@@ -36,9 +36,6 @@ class leet():
 
         return self.get_problemset_list()
 
-        req = self._get_req_imp()
-        fav_list = req.leet(self.session,self.headers,self.leet_source).get_fav_list()
-        return self._format_fav_list(fav_list)
 
     def get_problemset_list(self):
         req = self._get_req_imp()
@@ -245,7 +242,6 @@ if __name__ == "__main__":
     fav = x.get_problems_of_fav(fav[len(fav)-2]["name"])
     print(fav)
 
-    sys.exit()
     problems = x.get_problems()
     all_problems = problems
 
@@ -255,7 +251,6 @@ if __name__ == "__main__":
     print("frist problems:")
     print(problems)
 
-    sys.exit()
 
     print("####################")
     topics = x.get_topics()
@@ -266,60 +261,59 @@ if __name__ == "__main__":
 
 
     print("####################")
-    topic = topics[0]
-    print("topic name:")
-    print(topic["topic_name"])
-    topics = x.get_problems_of_topic(topic["topic_name"])
+    topic_name = "sliding-window"
+    topics = x.get_problems_of_topic(topic_name)
     problems = topics["problems"]
     print("all topics problems nums:")
     print(len(problems))
     print("frist topics problem:")
     print(problems[0])
 
+    sys.exit()
+
+    # print("####################")
+    # fav = x.get_fav_list()
+    # print("all fav nums:")
+    # print(len(fav))
+    # print("last fav:")
+    # print(fav[0])
+    # print("####################")
+
+    # fav_name = fav[0]["name"].replace(' ','')
+    # fav = x.get_problems_of_fav(fav_name)
+    # print("fav list:")
+    # print(len(fav))
+    # print("first fav:")
+    # print(fav[0])
+    # print("####################")
 
 
-    print("####################")
-    fav = x.get_fav_list()
-    print("all fav nums:")
-    print(len(fav))
-    print("last fav:")
-    print(fav[0])
-    print("####################")
+    # submissions = x.get_submissions(fav[0]['slug'])
+    # print("first submissions :")
+    # print(submissions[0])
+    # print("####################")
 
-    fav_name = fav[0]["name"].replace(' ','')
-    fav = x.get_problems_of_fav(fav_name)
-    print("fav list:")
-    print(len(fav))
-    print("first fav:")
-    print(fav[0])
-    print("####################")
+    # submission = x.get_submission(submissions[0]['id'])
+    # print("submission :")
+    # print(submission)
+    # print("####################")
 
-    submissions = x.get_submissions(fav[0]['slug'])
-    print("first submissions :")
-    print(submissions[0])
-    print("####################")
-
-    submission = x.get_submission(submissions[0]['id'])
-    print("submission :")
-    print(submission)
-    print("####################")
-
-    problem = x.get_problem(fav[0]['slug'])
-    print("problem :")
-    print(problem)
-    print("####################")
+    # problem = x.get_problem(fav[0]['slug'])
+    # print("problem :")
+    # print(problem)
+    # print("####################")
 
 
-    problems = x.get_problems_of_top151()
-    print("num:")
-    print(len(problems))
-    print("151 problem  :")
-    print(problems[0])
-    print("####################")
+    # problems = x.get_problems_of_top151()
+    # print("num:")
+    # print(len(problems))
+    # print("151 problem  :")
+    # print(problems[0])
+    # print("####################")
 
 
-    top_list = x.get_top_151_list()
-    print("151 list  :")
-    print(top_list)
-    print("####################")
+    # top_list = x.get_top_151_list()
+    # print("151 list  :")
+    # print(top_list)
+    # print("####################")
 

@@ -82,20 +82,22 @@ class leet():
 
         soup = BeautifulSoup(res.text, features='html.parser')
 
-        topic_elements = soup.find_all(class_='sm-topic')
+        topic_elements = soup.find_all(class_='group m-[10px] flex items-center')
         topics = [self._process_topic_element(topic) for topic in topic_elements]
 
-        company_elements = soup.find_all(class_='sm-company')
-        companies = [self._process_company_element(company) for company in company_elements]
+        # company_elements = soup.find_all(class_='sm-company')
+        # companies = [self._process_company_element(company) for company in company_elements]
         return {
             'topics': topics,
-            'companies': companies
+            #'companies': companies
             }
 
     def _process_topic_element(self,topic):
-        return {'topic_name': topic.find(class_='text-gray').string.strip(),
-                'num_problems': topic.find(class_='badge').string,
-                'topic_slug': topic.get('href').split('/')[2]}
+        ahref = topic.find(class_= 'inline-flex items-center')
+
+        return {'topic_name': topic.find(class_='whitespace-nowrap').string.strip(),
+                'num_problems': topic.find(class_='ml-1').string,
+                'topic_slug': ahref.get('href').split('/')[2]}
 
 
     def _process_company_element(self,company):

@@ -407,13 +407,8 @@ function! leetcode#ListProblems(refresh) abort
         let b:leetcode_sort_column = 'id'
         let b:leetcode_sort_order = 'asc'
         let s:get_topics = py3eval('leetapi.get_topics()')
-        let s:get_fav_list = py3eval('leetapi.get_fav_list()')
-        let s:get_top_151_list = py3eval('leetapi.get_top_151_list()')
     endif
     let topics = s:get_topics
-    let fav_list = s:get_fav_list
-    let top_151_list = s:get_top_151_list
-
 
     " concatenate the topics into a string
     let topic_slugs = map(copy(topics), 'v:val["topic_slug"] . ":" . v:val["num_problems"]')
@@ -426,26 +421,6 @@ function! leetcode#ListProblems(refresh) abort
     let s:leetcode_topic_end_line = line('$')
     call append('$', '')
 
-    let fav_list_slugs = map(copy(fav_list), 'v:val["name"]')
-    let fav_list_lines = s:FormatIntoColumns(fav_list_slugs)
-
-    call append('$', [ '## Fav', ''])
-
-    let s:leetcode_fav_list_start_line = line('$')
-    call append('$', fav_list_lines)
-    let s:leetcode_fav_list_end_line = line('$')
-
-    call append('$', '')
-
-    let top_151_list_slugs = map(copy(top_151_list), 'v:val["name"] . ":" . v:val["num"]')
-    let top_151_list_lines = s:FormatIntoColumns(top_151_list_slugs)
-
-    call append('$', [ '## Top151', ''])
-
-    let s:leetcode_top_151_list_start_line = line('$')
-    call append('$', top_151_list_lines)
-    let s:leetcode_top_151_list_end_line = line('$')
-    call append('$', '')
 
     call s:PrintProblemList()
 

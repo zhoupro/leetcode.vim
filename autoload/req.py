@@ -24,5 +24,5 @@ class req():
 
 if __name__ == "__main__":
     x = req("leet");
-    session = x.get_curl()
+    session = x.get_curl("leet-cn")
     print(x.make_headers(session))

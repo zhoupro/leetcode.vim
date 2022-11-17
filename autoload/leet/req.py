@@ -1,10 +1,8 @@
 import requests
-import sqlite3
 
+from requests import utils
+import browser_cookie3
 from . import   mycfg
-
-import os
-import subprocess
 
 class req():
 
@@ -20,39 +18,15 @@ class req():
         self.LC_BASE = mycfg.getConfig(source,"LC_BASE")
         self.LC_LOGIN= mycfg.getConfig(source,"LC_LOGIN")
 
-        
-
-        cookiepath = "/tmp/cookies.sqlite"
-
-        firefox_home = os.getenv("firefox_home")
-        findFlag, result = subprocess.getstatusoutput("find " + firefox_home + "/.mozilla -name cookies.sqlite")
-        if findFlag != 0:
-            return False
-
-        moveFlag, resutl = subprocess.getstatusoutput("rm -f {} && cp {} {}".format(cookiepath,result, cookiepath))
-        if findFlag != 0: 
-            return False
-
-        if self.source == "leet":
-            site = ".leetcode.com"
-        else:
-            site = ".leetcode-cn.com"
-
         session = requests.Session()
-        cookie = self._getcookiefromchrome(site , cookiepath)
-        session.cookies = requests.utils.add_dict_to_cookiejar(session.cookies, cookie)
+        cj = browser_cookie3.load()
+        dt = utils.dict_from_cookiejar(cj)
+        session.cookies = utils.add_dict_to_cookiejar(session.cookies, dt)
         res = session.get(self.LC_LOGIN)
         if res.status_code != 200:
             return False
         return session
 
-
-    def _getcookiefromchrome(self,host='.oschina.net',cookiepath='/data/www/cookie'):
-        sql="select host,name,value from moz_cookies where host='%s'" % host
-        with sqlite3.connect(cookiepath) as conn:
-            cu=conn.cursor()
-            cookies={name:value for host,name,value in cu.execute(sql).fetchall()}
-        return cookies
 
     def make_headers(self, session):
 

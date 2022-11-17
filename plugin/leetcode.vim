@@ -4,14 +4,6 @@ if !exists('g:leetcode_china')
     let g:leetcode_china = 1
 endif
 
-if !exists('g:leetcode_username')
-    let g:leetcode_username = ''
-endif
-
-if !exists('g:leetcode_password')
-    let g:leetcode_password = ''
-endif
-
 if !exists('g:leetcode_categories')
     let g:leetcode_categories = ['algorithms']
 endif
@@ -22,12 +14,6 @@ endif
 
 if !exists('g:leetcode_debug')
     let g:leetcode_debug = 0
-endif
-
-if !exists('g:leetcode_firefox_home')
-    let $firefox_home = '~'
-else
-    let $firefox_home = g:leetcode_firefox_home
 endif
 
 if g:leetcode_china == 1
