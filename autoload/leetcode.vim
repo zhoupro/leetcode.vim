@@ -235,10 +235,6 @@ function! s:ListProblemsOfFavList(fav_slug, refresh) abort
     let s:leetcode_topic_end_line = 0
     let b:leetcode_company_start_line = 0
     let b:leetcode_company_end_line = 0
-    let b:leetcode_top_151_list_end_line = 0
-    let b:leetcode_top_151_list_start_line = 0
-    let b:leetcode_fav_list_end_line = 0
-    let b:leetcode_fav_list_start_line = 0
 
     setlocal modifiable
 
@@ -287,10 +283,6 @@ function! s:ListProblemsOfTop151List(top_slug, refresh) abort
     let b:leetcode_company_start_line = 0
     let b:leetcode_company_end_line = 0
 
-    let b:leetcode_top_151_list_end_line = 0
-    let b:leetcode_top_151_list_start_line = 0
-    let b:leetcode_fav_list_end_line = 0
-    let b:leetcode_fav_list_start_line = 0
 
     setlocal modifiable
 
@@ -340,10 +332,6 @@ function! s:ListProblemsOfTopic(topic_slug, refresh) abort
     let s:leetcode_topic_end_line = 0
     let b:leetcode_company_start_line = 0
     let b:leetcode_company_end_line = 0
-    let b:leetcode_top_151_list_end_line = 0
-    let b:leetcode_top_151_list_start_line = 0
-    let b:leetcode_fav_list_end_line = 0
-    let b:leetcode_fav_list_start_line = 0
 
 
 
@@ -454,27 +442,6 @@ function! s:HandleProblemListCR() abort
         endif
         return
     endif
-
-    if line_nr >= s:leetcode_fav_list_start_line &&
-                \ line_nr < s:leetcode_fav_list_end_line
-        let fav_slug = expand('<cWORD>')
-
-        if fav_slug != ''
-            call s:ListProblemsOfFavList(fav_slug, 'norefresh')
-        endif
-        return
-    endif
-
-    if line_nr >= s:leetcode_top_151_list_start_line &&
-                \ line_nr < s:leetcode_top_151_list_end_line
-        let top_slug = expand('<cWORD>')
-        let top_slug = s:TagName(top_slug)
-        if top_slug != ''
-            call s:ListProblemsOfTop151List(top_slug,'norefresh')
-        endif
-        return
-    endif
-
 
     if line_nr >= s:leetcode_difficulty_start_line &&
                 \ line_nr < s:leetcode_difficulty_end_line

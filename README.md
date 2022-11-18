@@ -13,7 +13,6 @@ The new login procedure needs you to **login in your browser first** so that
 **leetcode.vim** can read the LeetCode session cookie from the browser's cookie
 storage.
 
-Supported browsers are: *** **Firefox**.
 
 ## Installation
 
@@ -23,10 +22,19 @@ for Neovim:
 pip3 install pynvim --user
 ```
 2. Install the plugin:
+
+plug
 ```vim
 Plug 'zhoupro/leetcode.vim', { 'do': 'pip3 install -r requirements.txt' }
 
 ```
+packer
+```lua
+
+Plug 'zhoupro/leetcode.vim', { 'do': 'pip3 install -r requirements.txt' }
+
+```
+
 
 ## Quick Start
 
@@ -55,14 +63,9 @@ Values:  `'python'`, `'python3'`, `'golang'` .
 
 Default value is `'golang'`.
 
-### `g:leetcode_firefox_home`
-
-The firefox user home
-Default value is `~`.
-
 
 ## Updates
-
+- 2022/11/18: update for website change and use browser cookie
 - 2020/01/17: Add Top151 list. [leetcode151][top151]
 - 2020/01/16: Rewrite this plugin.
 - 2019/08/01: Support custom test input
