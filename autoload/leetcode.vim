@@ -485,7 +485,8 @@ function! s:HandleProblemListCR() abort
             return
         endif
 
-        execute 'rightbelow vnew ' . problem_file_name
+        "execute 'rightbelow vnew ' . problem_file_name
+        execute 'edit ' . problem_file_name
         call leetcode#ResetSolution(1)
     endif
 endfunction
@@ -824,7 +825,8 @@ function! s:AskTestInputAndRunTest(problem, filetype, code) abort
     let s:leetcode_code = a:code
     let s:leetcode_filetype = a:filetype
 
-    autocmd BufLeave <buffer> call s:RunTest()
+    "autocmd BufLeave <buffer> call s:RunTest()
+    autocmd  BufwritePost <buffer> call s:RunTest()
 endfunction
 
 let s:comment_pattern = '\v(^#.*)|(^\s*$)'

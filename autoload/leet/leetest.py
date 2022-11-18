@@ -1,13 +1,14 @@
 class leetest():
     session=""
     headers = ""
-    LC_BASE = 'https://leetcode.com'
+    LC_BASE = 'https://leetcode.cn'
     LC_PROBLEM = LC_BASE + '/problems/{slug}/description'
     LC_TEST = LC_BASE + '/problems/{slug}/interpret_solution/'
 
-    def __init__(self, session, headers):
+    def __init__(self, session, headers,source):
         self.session= session
         self.headers = headers
+        _ = source
 
     def test_solution(self,problem_id, slug, filetype, code, test_input):
         code = self._remove_description(code)

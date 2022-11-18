@@ -233,41 +233,51 @@ def submit_solution(slug, filetype, code=None):
 
 if __name__ == "__main__":
     x = leet("leet");
-    print("####################")
-    fav = x.get_fav_list()
-    print(fav)
-    print("####################")
+    # print("####################")
+    # fav = x.get_fav_list()
+    # print(fav)
+    # print("####################")
 
 
-    fav = x.get_problems_of_fav(fav[len(fav)-2]["name"])
-    print(fav)
+    # fav = x.get_problems_of_fav(fav[len(fav)-2]["name"])
+    # print(fav)
 
-    problems = x.get_problems()
-    all_problems = problems
+    # problems = x.get_problems()
+    # all_problems = problems
 
-    print("####################")
-    print("all problems nums:")
-    print(len(problems))
-    print("frist problems:")
-    print(problems)
-
-
-    print("####################")
-    topics = x.get_topics()
-    print("all topics nums:")
-    print(len(topics))
-    print("frist topics:")
-    print(topics[0])
+    # print("####################")
+    # print("all problems nums:")
+    # print(len(problems))
+    # print("frist problems:")
+    # print(problems)
 
 
-    print("####################")
-    topic_name = "sliding-window"
-    topics = x.get_problems_of_topic(topic_name)
-    problems = topics["problems"]
-    print("all topics problems nums:")
-    print(len(problems))
-    print("frist topics problem:")
-    print(problems[0])
+    # print("####################")
+    # topics = x.get_topics()
+    # print("all topics nums:")
+    # print(len(topics))
+    # print("frist topics:")
+    # print(topics[0])
+
+
+    # print("####################")
+    # topic_name = "sliding-window"
+    # topics = x.get_problems_of_topic(topic_name)
+    # problems = topics["problems"]
+    # print("all topics problems nums:")
+    # print(len(problems))
+    # print("frist topics problem:")
+    # print(problems[0])
+
+
+    problem_id = "13"
+    title = "Roman To Integer"
+    slug = "roman-to-integer"
+    filetype = "golang"
+    code = "func romanToInt(s string) int {\n    return 1\n}"
+    test_input = "\"III\""
+    x.test_solution(problem_id, title, slug, filetype, code, test_input)
+
 
     sys.exit()
 
