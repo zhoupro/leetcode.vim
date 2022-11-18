@@ -788,7 +788,9 @@ function! leetcode#TestSolution() abort
         return
     endif
 
-    let code = join(getline('1', '$'), "\n")
+    let start_line = search("local end", 'n')
+
+    let code = join(getline(start_line, '$'), "\n")
 
     call s:AskTestInputAndRunTest(problem, filetype, code)
 endfunction
@@ -838,7 +840,6 @@ function! s:RunTest() abort
     " Load the buffer from the disk. If the user executed :q!, the buffer
     " will be cleared since the file is empty.
     edit!
-
     let raw_test_input = getline('1', '$')
     let test_input = filter(copy(raw_test_input), 'v:val !~# s:comment_pattern')
     let test_input = join(test_input, "\n")
@@ -872,8 +873,9 @@ function! leetcode#SubmitSolution() abort
         echo 'no file name'
         return
     endif
+    let start_line = search("local end", 'n')
 
-    let code = join(getline('1', '$'), "\n")
+    let code = join(getline(start_line, '$'), "\n")
     let slug = split(file_name, '\.')[0]
     let filetype = s:GuessFileType()
 
