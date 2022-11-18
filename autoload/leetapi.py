@@ -111,6 +111,16 @@ class leet():
         submissions =  req.leetsubmit(self.session,self.headers,self.leet_source).get_submissions(problem)
         return  submissions
 
+    def get_submit(self, sid):
+        req = self._get_req_imp("leetsubmit")
+        submission =  req.leetsubmit(self.session,self.headers,self.leet_source).get_submit(sid)
+        req = self._get_req_imp("leetsubmitsrc")
+        submission = req.leetsubmitsrc().format_submit(submission)
+        problem = self.get_problem(submission['slug'])
+        submission['title'] = problem['title']
+        return  submission
+
+
     def get_submission(self, sid):
         req = self._get_req_imp("leetsubmit")
         submission =  req.leetsubmit(self.session,self.headers,self.leet_source).get_submission(sid)
@@ -270,13 +280,26 @@ if __name__ == "__main__":
     # print(problems[0])
 
 
-    problem_id = "13"
-    title = "Roman To Integer"
-    slug = "roman-to-integer"
-    filetype = "golang"
-    code = "func romanToInt(s string) int {\n    return 1\n}"
-    test_input = "\"III\""
-    x.test_solution(problem_id, title, slug, filetype, code, test_input)
+    # problem_id = "13"
+    # title = "Roman To Integer"
+    # slug = "roman-to-integer"
+    # filetype = "golang"
+    # code = "func romanToInt(s string) int {\n    return 1\n}"
+    # test_input = "\"III\""
+    # x.test_solution(problem_id, title, slug, filetype, code, test_input)
+
+    slug = "two-sum"
+    submissions = x.get_submissions(slug)
+    print("first submissions :")
+    print(submissions)
+    print("####################")
+    x.get_submit("383003768")
+
+    # submission = x.get_submission(submissions[0]['id'])
+    # print("submission :")
+    # print(submission)
+    # print("####################")
+
 
 
     sys.exit()
@@ -297,16 +320,6 @@ if __name__ == "__main__":
     # print(fav[0])
     # print("####################")
 
-
-    # submissions = x.get_submissions(fav[0]['slug'])
-    # print("first submissions :")
-    # print(submissions[0])
-    # print("####################")
-
-    # submission = x.get_submission(submissions[0]['id'])
-    # print("submission :")
-    # print(submission)
-    # print("####################")
 
     # problem = x.get_problem(fav[0]['slug'])
     # print("problem :")

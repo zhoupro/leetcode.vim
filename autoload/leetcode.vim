@@ -35,7 +35,7 @@ function! s:SetupProblemListBuffer() abort
     setlocal bufhidden=hide
     setlocal nowrap
     nnoremap <silent> <buffer> <return> :call <SID>HandleProblemListCR()<cr>
-    nnoremap <silent> <buffer> s :call <SID>HandleProblemListS()<cr>
+    " nnoremap <silent> <buffer> s :call <SID>HandleProblemListS()<cr>
     nnoremap <silent> <buffer> r :call <SID>HandleProblemListR()<cr>
     nnoremap <silent> <buffer> S :call <SID>HandleProblemListSort()<cr>
 
@@ -682,7 +682,6 @@ function! leetcode#ResetSolution(with_latest_submission) abort
     call append('$', output)
 
     silent! normal! gggqG
-
     call append('$', code)
 
     silent! normal! ggdd

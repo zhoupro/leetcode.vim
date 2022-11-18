@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 import json
 import re
 from . import   mycfg
@@ -22,6 +21,7 @@ class leetsubmit():
         self.LC_SUBMISSION= mycfg.getConfig(source,"LC_SUBMISSION")
         self.LC_SUBMISSIONS= mycfg.getConfig(source,"LC_SUBMISSIONS")
         self.LC_SUBMIT= mycfg.getConfig(source,"LC_SUBMIT")
+        self.LC_GRAPHQL= mycfg.getConfig(source,"LC_GRAPHQL")
 
     def get_submissions(self, slug):
         headers = self.headers
@@ -40,60 +40,9 @@ class leetsubmit():
             }
             submissions.append(s)
         return submissions
+
     def get_submission(self, sid):
-        headers =  self.headers
-        url = self.LC_SUBMISSION.format(submission=sid)
-        res = self.session.get(url, headers=headers)
-        if res.status_code != 200:
-            return None
-
-        # we need to parse the data from the Javascript snippet
-        s = res.text
-        submission = {
-            'id': sid,
-            'state': int(self._group1(re.search(r"status_code: parseInt\('([^']*)'", s),  'not found')),
-            'runtime': self._group1(re.search("runtime: '([^']*)'", s), 'not found'),
-            'passed': self._group1(re.search("total_correct : '([^']*)'", s), 'not found'),
-            'total': self._group1(re.search("total_testcases : '([^']*)'", s), 'not found'),
-            'testcase': self._split(self._unescape(self._group1(re.search("input : '([^']*)'", s), ''))),
-            'answer': self._split(self._unescape(self._group1(re.search("code_output : '([^']*)'", s), ''))),
-            'expected_answer': self._split(self._unescape(self._group1(re.search("expected_output : '([^']*)'", s),
-                                                        ''))),
-            'problem_id': self._group1(re.search("questionId: '([^']*)'", s), 'not found'),
-            'slug': self._group1(re.search("editCodeUrl: '([^']*)'", s), '///').split('/')[2],
-            'filetype': self._group1(re.search("getLangDisplay: '([^']*)'", s), 'not found'),
-            'error': [],
-            'stdout': [],
-        }
-
-
-        # the punctuations and newlines in the code are escaped like '\\u0010' ('\\' => real backslash)
-        # to unscape the string, we do the trick '\\u0010'.encode().decode('unicode_escape') ==> '\n'
-        submission['code'] = self._break_code_lines(self._unescape(self._group1(
-            re.search("submissionCode: '([^']*)'", s), '')))
-
-        dist_str = self._unescape(self._group1(re.search("runtimeDistributionFormatted: '([^']*)'", s),
-                                     '{"distribution":[]}'))
-        dist = json.loads(dist_str)['distribution']
-        dist.reverse()
-
-        # the second key "runtime" is the runtime in milliseconds
-        # we need to search from the position after the first "runtime" key
-        prev_runtime = re.search("runtime: '([^']*)'", s)
-        if not prev_runtime:
-            my_runtime = 0
-        else:
-            my_runtime = int(self._group1(re.search("runtime: '([^']*)'", s[prev_runtime.end():]), 0))
-
-        accum = 0
-        for runtime, frequency in dist:
-            accum += frequency
-            if my_runtime >= int(runtime):
-                break
-
-        submission['runtime_percentile'] = '{:.1f}%'.format(accum)
-        return submission
-
+        return self.get_submit(sid)
 
     def _group1(self,match, default):
         if match:
@@ -150,4 +99,74 @@ class leetsubmit():
             return ''
         return code[eol+1:]
 
+    def get_submit(self,slug):
+        headers = self.headers
+        headers['Referer'] = self.LC_PROBLEM.format(slug=slug)
+        body = {'query': '''query mySubmissionDetail($id: ID!) {
+                  submissionDetail(submissionId: $id) {
+                    id
+                    code
+                    runtime
+                    memory
+                    rawMemory
+                    statusDisplay
+                    timestamp
+                    lang
+                    isMine
+                    passedTestCaseCnt
+                    totalTestCaseCnt
+                    sourceUrl
+                    question {
+                      titleSlug
+                      title
+                      translatedTitle
+                      questionId
+                      __typename
+                    }
+                    ... on GeneralSubmissionNode {
+                      outputDetail {
+                        codeOutput
+                        expectedOutput
+                        input
+                        compileError
+                        runtimeError
+                        lastTestcase
+                        __typename
+                      }
+                      __typename
+                    }
+                    submissionComment {
+                      comment
+                      flagType
+                      __typename
+                    }
+                    __typename
+                  }
+                }''',
+                'variables': {'id': slug},
+                'operationName': 'mySubmissionDetail'}
+        res = self.session.post(self.LC_GRAPHQL, json=body, headers=headers)
+        if res.status_code != 200:
+            return None
+
+        q = res.json()['data']['submissionDetail']
+
+        submission = {
+            'id': q["id"],
+            'code': q["code"].split("\n"),
+            'passed':q["passedTestCaseCnt"],
+            'total': q["totalTestCaseCnt"],
+            'error': [],
+            'stdout': [],
+            'filetype': q["lang"],
+            'testcase': q["outputDetail"]["lastTestcase"],
+            'expected_answer': q["outputDetail"]["expectedOutput"],
+            'answer': q["outputDetail"]["codeOutput"],
+            'state': q["statusDisplay"],
+            'runtime': q["runtime"],
+            'problem_id': q["question"]["questionId"],
+            'slug': q["question"]["titleSlug"]
+        }
+
+        return submission
 
