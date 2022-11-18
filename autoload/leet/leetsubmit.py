@@ -1,5 +1,3 @@
-import json
-import re
 from . import   mycfg
 
 class leetsubmit():

@@ -243,24 +243,25 @@ def submit_solution(slug, filetype, code=None):
 
 if __name__ == "__main__":
     x = leet("leet");
-    # print("####################")
-    # fav = x.get_fav_list()
-    # print(fav)
-    # print("####################")
+    print("####################")
+    fav = x.get_fav_list()
+    print(fav)
+    print("####################")
 
 
     # fav = x.get_problems_of_fav(fav[len(fav)-2]["name"])
     # print(fav)
 
-    # problems = x.get_problems()
-    # all_problems = problems
+    problems = x.get_problems()
+    all_problems = problems
 
-    # print("####################")
-    # print("all problems nums:")
-    # print(len(problems))
-    # print("frist problems:")
-    # print(problems)
+    print("####################")
+    print("all problems nums:")
+    print(len(problems))
+    print("frist problems:")
+    print(problems)
 
+    sys.exit()
 
     # print("####################")
     # topics = x.get_topics()

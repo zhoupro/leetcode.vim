@@ -13,6 +13,9 @@ The new login procedure needs you to **login in your browser first** so that
 **leetcode.vim** can read the LeetCode session cookie from the browser's cookie
 storage.
 
+## limit
+
+only for China only current.
 
 ## Installation
 
@@ -30,8 +33,7 @@ Plug 'zhoupro/leetcode.vim', { 'do': 'pip3 install -r requirements.txt' }
 ```
 packer
 ```lua
-
-Plug 'zhoupro/leetcode.vim', { 'do': 'pip3 install -r requirements.txt' }
+use({ "zhoupro/leetcode.vim", run = "pip3 install -r requirements.txt" })
 
 ```
 
