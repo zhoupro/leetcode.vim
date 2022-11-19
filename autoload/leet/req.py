@@ -22,9 +22,11 @@ class req():
         cj = browser_cookie3.load()
         dt = utils.dict_from_cookiejar(cj)
         session.cookies = utils.add_dict_to_cookiejar(session.cookies, dt)
-        res = session.get(self.LC_LOGIN)
-        if res.status_code != 200:
-            return False
+        # leet not get login
+        if source != "leet":
+            res = session.get(self.LC_LOGIN)
+            if res.status_code != 200:
+                return False
         return session
 
 

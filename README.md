@@ -13,9 +13,11 @@ The new login procedure needs you to **login in your browser first** so that
 **leetcode.vim** can read the LeetCode session cookie from the browser's cookie
 storage.
 
-## limit
 
-only for China only current.
+## `g:leetcode_china`
+
+When non-zero, use LeetCode China accounts instead.
+Default value is `1`.
 
 ## Installation
 
@@ -43,6 +45,9 @@ use({ "zhoupro/leetcode.vim", run = "pip3 install -r requirements.txt" })
 - `:LeetCodeList`: browse the problems.
 - `:LeetCodeTest`: run the code with the default test case.
 - `:LeetCodeSubmit`: submit the code.
+
+## Local Code 
+When test and submit, match `local end` to last. You can add your local code before `//local end`.
 
 ## Key mappings
 
