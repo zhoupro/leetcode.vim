@@ -43,6 +43,9 @@ class leet():
             # skip hidden questions
             if p['stat']['question__hide']:
                 continue
+            if p['stat']['total_submitted'] == 0:
+                continue
+
             problem = {'state':p['status'],
                        'id': p['stat']['question_id'],
                        'fid': p['stat']['frontend_question_id'],
